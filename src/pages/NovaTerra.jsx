@@ -158,8 +158,12 @@ function OrbitalGraphic() {
 
       {/* Center Earth — 3D interativo (fallback: foto Blue Marble) */}
       <div
-        className="relative z-10 flex items-center justify-center cursor-grab active:cursor-grabbing"
-        style={{ width: 'clamp(150px, 48%, 200px)', aspectRatio: '1' }}
+        className="absolute z-10 left-1/2 top-1/2 cursor-grab active:cursor-grabbing"
+        style={{
+          width: 'clamp(150px, 50%, 210px)',
+          aspectRatio: '1',
+          transform: 'translate(-50%, -50%)',
+        }}
       >
         <Suspense fallback={<StaticEarth />}>
           <EarthGlobe3D />
