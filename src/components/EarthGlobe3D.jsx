@@ -22,8 +22,9 @@ function Atmosphere() {
       varying vec3 vView;
       uniform vec3 uColor;
       void main() {
-        float intensity = pow(0.70 - dot(vNormal, vView), 3.2);
-        gl_FragColor = vec4(uColor, 1.0) * clamp(intensity, 0.0, 1.0);
+        // glow fino e suave, apenas no limbo
+        float intensity = pow(0.60 - dot(vNormal, vView), 5.0);
+        gl_FragColor = vec4(uColor, 1.0) * clamp(intensity, 0.0, 1.0) * 0.4;
       }
     `,
     blending: THREE.AdditiveBlending,
@@ -33,7 +34,7 @@ function Atmosphere() {
   }), []);
 
   return (
-    <mesh scale={1.22} material={material}>
+    <mesh scale={1.10} material={material}>
       <sphereGeometry args={[1, 64, 64]} />
     </mesh>
   );
@@ -89,17 +90,17 @@ function Earth() {
 export default function EarthGlobe3D() {
   return (
     <Canvas
-      camera={{ position: [0, 0, 2.75], fov: 45 }}
+      camera={{ position: [0, 0, 2.45], fov: 45 }}
       gl={{ alpha: true, antialias: true }}
       dpr={[1, 2]}
       style={{ background: 'transparent' }}
     >
-      {/* Ambiente — mantém o lado noturno visível, mas escuro */}
-      <ambientLight intensity={0.45} />
-      {/* Sol — frontal-superior, ilumina a face visível com terminador suave */}
-      <directionalLight position={[1.8, 1.2, 2.6]} intensity={3.1} color="#fff6ec" />
-      {/* Luz de preenchimento azulada (rebote do espaço) */}
-      <directionalLight position={[-2.5, -0.5, -1]} intensity={0.5} color="#2196F3" />
+      {/* Ambiente — Terra bem visível e uniforme */}
+      <ambientLight intensity={0.7} />
+      {/* Sol — frontal, ilumina quase toda a face visível com terminador suave */}
+      <directionalLight position={[1.2, 0.8, 2.8]} intensity={3.2} color="#fff6ec" />
+      {/* Preenchimento azulado discreto (rebote do espaço) */}
+      <directionalLight position={[-2.5, -0.5, -1]} intensity={0.35} color="#2196F3" />
 
       <Suspense fallback={null}>
         <Earth />
