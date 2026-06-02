@@ -1,8 +1,27 @@
 {
-  "name": "novatera",
+  "name": "novaterra",
   "private": true,
   "version": "1.0.0",
   "type": "module",
+  "description": "NovaTerra — Inteligência Orbital para o Planeta. Plataforma que conecta dados de satélites da NASA, ESA e INPE à IA para monitoramento agrícola, de desastres e ambiental.",
+  "author": "Synapse Code",
+  "license": "MIT",
+  "homepage": "https://github.com/recpires/novaterra.globalsolution",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/recpires/novaterra.globalsolution.git"
+  },
+  "keywords": [
+    "satellite",
+    "ai",
+    "agriculture",
+    "ndvi",
+    "environmental-monitoring",
+    "fiap",
+    "global-solution",
+    "react",
+    "vite"
+  ],
   "scripts": {
     "dev": "vite",
     "build": "vite build",
