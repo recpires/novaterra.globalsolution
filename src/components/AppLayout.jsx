@@ -46,10 +46,9 @@ function Sidebar({ open, onClose }) {
 
         <div className="h-16 flex items-center gap-2.5 px-5"
           style={{ borderBottom: `1px solid ${C.border}` }}>
-          <div className="w-8 h-8 rounded-lg flex items-center justify-center"
-            style={{ background: C.teal }}>
-            <Satellite size={16} color="#0D1117" strokeWidth={2.5} />
-          </div>
+          <img src="/novaterra-logo.png" alt="NovaTerra"
+            className="w-9 h-9 rounded-lg object-cover"
+            style={{ boxShadow: `0 0 14px ${C.teal}44` }} />
           <span className="font-black text-xl tracking-tight"
             style={{ fontFamily: 'Outfit, sans-serif', color: C.txt }}>
             Nova<span style={{ color: C.teal }}>Terra</span>

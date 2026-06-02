@@ -232,10 +232,9 @@ function Navbar() {
       <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
         {/* Logo */}
         <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-lg flex items-center justify-center"
-            style={{ background: C.teal }}>
-            <Satellite size={16} color="#0D1117" strokeWidth={2.5} />
-          </div>
+          <img src="/novaterra-logo.png" alt="NovaTerra"
+            className="w-9 h-9 rounded-lg object-cover"
+            style={{ boxShadow: `0 0 16px ${C.teal}44` }} />
           <span className="font-black text-xl tracking-tight" style={{ fontFamily: 'Outfit, sans-serif', color: C.txt }}>
             Nova<span style={{ color: C.teal }}>Terra</span>
           </span>
@@ -1125,9 +1124,9 @@ function Footer() {
         <div className="flex flex-col lg:flex-row items-center justify-between gap-8">
           {/* Brand */}
           <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: C.teal }}>
-              <Satellite size={18} color="#0D1117" strokeWidth={2.5} />
-            </div>
+            <img src="/novaterra-logo.png" alt="NovaTerra"
+              className="w-10 h-10 rounded-xl object-cover"
+              style={{ boxShadow: `0 0 16px ${C.teal}44` }} />
             <div>
               <span className="font-black text-xl" style={{ fontFamily: 'Outfit, sans-serif' }}>
                 Nova<span style={{ color: C.teal }}>Terra</span>
