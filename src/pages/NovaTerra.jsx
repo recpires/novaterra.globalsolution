@@ -105,91 +105,28 @@ function StaticEarth() {
   );
 }
 
-/* ─── ORBITAL GRAPHIC ─── */
+/* ─── ORBITAL GRAPHIC — cena 3D completa (Terra + anéis concêntricos) ─── */
 function OrbitalGraphic() {
   return (
-    <div className="relative w-72 h-72 md:w-[400px] md:h-[400px] flex items-center justify-center mx-auto">
-      {/* Rings */}
-      {[0, 1, 2].map(i => (
-        <motion.div
-          key={i}
-          className="absolute inset-0 rounded-full"
-          style={{
-            inset: `${i * 12}%`,
-            border: `1px solid rgba(255,255,255,${0.06 - i * 0.015})`,
-          }}
-          animate={{ rotate: i % 2 === 0 ? 360 : -360 }}
-          transition={{ duration: 28 - i * 6, repeat: Infinity, ease: 'linear' }}
-        />
-      ))}
+    <div className="relative w-80 h-80 md:w-[460px] md:h-[460px] mx-auto cursor-grab active:cursor-grabbing">
+      {/* Ambient glow atrás da cena */}
+      <div className="absolute pointer-events-none rounded-full" style={{
+        inset: '26%',
+        background: `radial-gradient(circle, ${C.teal}1F 0%, ${C.blue}12 45%, transparent 72%)`,
+        boxShadow: `0 0 90px 26px ${C.teal}14`,
+      }} />
 
-      {/* Satellite dot on outer ring */}
-      <motion.div
-        className="absolute inset-0 rounded-full"
-        animate={{ rotate: 360 }}
-        transition={{ duration: 14, repeat: Infinity, ease: 'linear' }}
-      >
-        <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-6 h-6 rounded-full flex items-center justify-center"
-          style={{ background: C.teal, boxShadow: `0 0 12px ${C.teal}` }}>
-          <Satellite size={13} color="#0D1117" strokeWidth={2.5} />
-        </div>
-      </motion.div>
-
-      {/* Radio sat on middle ring */}
-      <motion.div
-        className="absolute rounded-full"
-        style={{ inset: '12%' }}
-        animate={{ rotate: -360 }}
-        transition={{ duration: 22, repeat: Infinity, ease: 'linear' }}
-      >
-        <div className="absolute -top-2.5 left-1/2 -translate-x-1/2 w-5 h-5 rounded-full flex items-center justify-center"
-          style={{ background: C.blue, boxShadow: `0 0 10px ${C.blue}` }}>
-          <Radio size={10} color="#fff" strokeWidth={2.5} />
-        </div>
-      </motion.div>
-
-      {/* Ambient glow behind Earth */}
-      <div className="absolute pointer-events-none" style={{ inset: '22%' }}>
-        <div className="w-full h-full rounded-full" style={{
-          background: `radial-gradient(circle, ${C.teal}22 0%, ${C.blue}14 45%, transparent 72%)`,
-          boxShadow: `0 0 80px 24px ${C.teal}1A`,
-        }} />
-      </div>
-
-      {/* Center Earth — 3D interativo (fallback: foto Blue Marble) */}
-      <div
-        className="absolute z-10 left-1/2 top-1/2 cursor-grab active:cursor-grabbing"
-        style={{
-          width: 'clamp(150px, 50%, 210px)',
-          aspectRatio: '1',
-          transform: 'translate(-50%, -50%)',
-        }}
-      >
-        <Suspense fallback={<StaticEarth />}>
+      {/* Canvas 3D ocupa todo o quadro (Terra + anéis concêntricos) */}
+      <div className="absolute inset-0">
+        <Suspense fallback={
+          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+            style={{ width: '42%', aspectRatio: '1' }}>
+            <StaticEarth />
+          </div>
+        }>
           <EarthGlobe3D />
         </Suspense>
       </div>
-
-      {/* Orbital data dots */}
-      {[C.teal, C.blue, C.orange, C.green].map((color, i) => {
-        const a = (i * 90 - 25) * (Math.PI / 180);
-        const r = 140;
-        return (
-          <motion.div
-            key={i}
-            className="absolute w-3 h-3 rounded-full"
-            style={{
-              background: color,
-              left: `calc(50% + ${Math.cos(a) * r}px)`,
-              top:  `calc(50% + ${Math.sin(a) * r}px)`,
-              transform: 'translate(-50%,-50%)',
-              boxShadow: `0 0 10px ${color}`,
-            }}
-            animate={{ scale: [1, 1.6, 1], opacity: [0.5, 1, 0.5] }}
-            transition={{ duration: 2.2, repeat: Infinity, delay: i * 0.55 }}
-          />
-        );
-      })}
     </div>
   );
 }
@@ -392,10 +329,10 @@ function HeroSection() {
           </motion.div>
         </motion.div>
 
-        {/* Right: graphic */}
+        {/* Right: graphic (fade simples — sem scale, que quebraria a medição do canvas 3D) */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
           transition={{ duration: 1.1, ease: 'easeOut', delay: 0.25 }}
           className="flex justify-center">
           <OrbitalGraphic />
