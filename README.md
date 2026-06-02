@@ -101,6 +101,7 @@ Os dados satelitais existem. O **acesso e a interpretação** em tempo real, nã
 | Rota | Tela | Descrição |
 |------|------|-----------|
 | `/` | **Landing Page** | Apresentação completa com 11 seções (hero orbital, problema, módulos, IA, fontes, banco de dados, CTA) |
+| `/login` | **Login** | Autenticação de acesso à plataforma (credenciais de demonstração) |
 | `/dashboard` | **Dashboard** | KPIs, mapa do Brasil em tempo real, gráficos de 30 dias e distribuição por módulo |
 | `/agrisat` | **AgriSat** | Lista de fazendas, escala NDVI, umidade por camada e recomendação da IA |
 | `/sentinel` | **SentinelAlert** | Alertas com filtros por tipo, mapa de risco e painel de detalhes |
@@ -233,6 +234,19 @@ npm run build
 # 5. Pré-visualizar o build
 npm run preview
 ```
+
+### 🔑 Credenciais de Acesso (demonstração)
+
+A plataforma possui uma tela de login em `/login`. Use as credenciais de demonstração:
+
+| Campo | Valor |
+|-------|-------|
+| **E-mail** | `admin@novaterra.com` |
+| **Senha** | `nova2026` |
+
+> A autenticação é **client-side mockada** (sem backend) — adequada apenas para a demonstração
+> acadêmica. A própria tela de login exibe as credenciais e oferece um botão
+> **"Preencher credenciais de demonstração"**.
 
 ---
 

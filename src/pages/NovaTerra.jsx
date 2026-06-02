@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { motion, useInView, AnimatePresence } from 'framer-motion';
 import {
   Satellite, Leaf, ShieldAlert, Globe, Bell, TreePine,
@@ -256,11 +257,11 @@ function Navbar() {
           ))}
         </nav>
 
-        <a href="#cta"
+        <Link to="/login"
           className="hidden md:inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold transition-all hover:brightness-110 active:scale-95"
           style={{ background: C.teal, color: '#0D1117' }}>
           Acessar Plataforma <ArrowRight size={15} />
-        </a>
+        </Link>
       </div>
     </header>
   );
@@ -331,11 +332,11 @@ function HeroSection() {
 
           {/* CTAs */}
           <motion.div variants={fadeUp} custom={3} className="flex flex-wrap gap-3 mb-12">
-            <a href="#cta"
+            <Link to="/login"
               className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl font-bold text-sm transition-all hover:brightness-110 active:scale-95"
               style={{ background: C.teal, color: '#0D1117' }}>
               Acessar a Plataforma <ArrowRight size={16} />
-            </a>
+            </Link>
             <a href="#modulos"
               className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl font-bold text-sm border transition-all hover:border-white/20"
               style={{ borderColor: C.border, color: C.txt2 }}>
@@ -1087,10 +1088,10 @@ function CTASection() {
           Junte-se à plataforma que transforma dados orbitais em decisões que protegem vidas, lavouras e o meio ambiente.
         </motion.p>
         <motion.div variants={fadeUp} custom={3} className="flex flex-wrap gap-4 justify-center mb-12">
-          <button className="inline-flex items-center gap-2.5 px-8 py-4 rounded-xl font-black text-base transition-all hover:brightness-110 active:scale-95"
+          <Link to="/login" className="inline-flex items-center gap-2.5 px-8 py-4 rounded-xl font-black text-base transition-all hover:brightness-110 active:scale-95"
             style={{ background: C.teal, color: '#0D1117' }}>
             Criar Conta Grátis <ArrowRight size={18} />
-          </button>
+          </Link>
           <button className="inline-flex items-center gap-2.5 px-8 py-4 rounded-xl font-black text-base border transition-all hover:border-white/20"
             style={{ borderColor: C.border, color: C.txt2 }}>
             Ver Demo ao Vivo

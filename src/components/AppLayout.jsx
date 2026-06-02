@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Satellite, LayoutDashboard, Leaf, ShieldAlert, TreePine,
@@ -7,6 +7,7 @@ import {
   ChevronRight, Sun, Moon,
 } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
+import { useAuth } from '../context/AuthContext';
 
 const NAV = [
   { path: '/dashboard',  label: 'Dashboard',     Icon: LayoutDashboard, color: '#2196F3' },
@@ -28,6 +29,9 @@ const PAGE_TITLES = {
 
 function Sidebar({ open, onClose }) {
   const { C } = useTheme();
+  const { logout } = useAuth();
+  const navigate = useNavigate();
+  const handleLogout = () => { logout(); navigate('/login'); };
   return (
     <>
       <AnimatePresence>
@@ -85,7 +89,8 @@ function Sidebar({ open, onClose }) {
             onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
             <Settings size={17} /> Configurações
           </button>
-          <button className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all"
+          <button onClick={handleLogout}
+            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold transition-all"
             style={{ color: '#E53935' }}
             onMouseEnter={e => e.currentTarget.style.background = '#E5393514'}
             onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
@@ -104,6 +109,7 @@ function Sidebar({ open, onClose }) {
 function Header({ onMenuClick }) {
   const { pathname } = useLocation();
   const { C, isDark, toggle } = useTheme();
+  const { user } = useAuth();
   const title = PAGE_TITLES[pathname] || 'NovaTerra';
 
   return (
@@ -152,7 +158,7 @@ function Header({ onMenuClick }) {
           style={{ background: `${C.teal}22`, border: `1px solid ${C.teal}44` }}>
           <User size={14} color={C.teal} />
         </div>
-        <span className="text-sm font-semibold hidden sm:block" style={{ color: C.txt }}>Rodrigo</span>
+        <span className="text-sm font-semibold hidden sm:block" style={{ color: C.txt }}>{user?.nome || 'Rodrigo'}</span>
       </div>
     </header>
   );

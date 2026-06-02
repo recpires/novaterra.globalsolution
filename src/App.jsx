@@ -1,9 +1,11 @@
 import React, { Suspense } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { ThemeProvider, useTheme } from './context/ThemeContext';
+import { AuthProvider, useAuth } from './context/AuthContext';
 
 import AppLayout     from './components/AppLayout';
 import NovaTerra     from './pages/NovaTerra';
+import Login         from './pages/Login';
 import Dashboard     from './pages/Dashboard';
 import AgriSat       from './pages/AgriSat';
 import SentinelAlert from './pages/SentinelAlert';
@@ -24,7 +26,10 @@ function Loader() {
   );
 }
 
-function AppPage({ children }) {
+/* Rota protegida — exige autenticação */
+function Protected({ children }) {
+  const { isAuthenticated } = useAuth();
+  if (!isAuthenticated) return <Navigate to="/login" replace />;
   return <AppLayout>{children}</AppLayout>;
 }
 
@@ -32,14 +37,19 @@ function AppRoutes() {
   return (
     <Suspense fallback={<Loader />}>
       <Routes>
-        <Route path="/"           element={<NovaTerra />} />
-        <Route path="/dashboard"  element={<AppPage><Dashboard /></AppPage>} />
-        <Route path="/agrisat"    element={<AppPage><AgriSat /></AppPage>} />
-        <Route path="/sentinel"   element={<AppPage><SentinelAlert /></AppPage>} />
-        <Route path="/ecotrack"   element={<AppPage><EcoTrack /></AppPage>} />
-        <Route path="/assistente" element={<AppPage><Assistente /></AppPage>} />
-        <Route path="/relatorios" element={<AppPage><Relatorios /></AppPage>} />
-        <Route path="*"           element={<Navigate to="/" replace />} />
+        {/* Públicas */}
+        <Route path="/"      element={<NovaTerra />} />
+        <Route path="/login" element={<Login />} />
+
+        {/* Protegidas (com sidebar) */}
+        <Route path="/dashboard"  element={<Protected><Dashboard /></Protected>} />
+        <Route path="/agrisat"    element={<Protected><AgriSat /></Protected>} />
+        <Route path="/sentinel"   element={<Protected><SentinelAlert /></Protected>} />
+        <Route path="/ecotrack"   element={<Protected><EcoTrack /></Protected>} />
+        <Route path="/assistente" element={<Protected><Assistente /></Protected>} />
+        <Route path="/relatorios" element={<Protected><Relatorios /></Protected>} />
+
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Suspense>
   );
@@ -48,9 +58,11 @@ function AppRoutes() {
 export default function App() {
   return (
     <ThemeProvider>
-      <BrowserRouter>
-        <AppRoutes />
-      </BrowserRouter>
+      <AuthProvider>
+        <BrowserRouter>
+          <AppRoutes />
+        </BrowserRouter>
+      </AuthProvider>
     </ThemeProvider>
   );
 }
