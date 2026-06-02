@@ -123,22 +123,53 @@ function OrbitalGraphic() {
         </div>
       </motion.div>
 
-      {/* Glow */}
-      <div className="absolute" style={{ inset: '25%' }}>
+      {/* Ambient glow behind Earth */}
+      <div className="absolute pointer-events-none" style={{ inset: '22%' }}>
         <div className="w-full h-full rounded-full" style={{
-          background: `radial-gradient(circle, ${C.teal}28 0%, transparent 70%)`,
-          boxShadow: `0 0 70px 20px ${C.teal}20`,
+          background: `radial-gradient(circle, ${C.teal}22 0%, ${C.blue}14 45%, transparent 72%)`,
+          boxShadow: `0 0 80px 24px ${C.teal}1A`,
         }} />
       </div>
 
-      {/* Center globe */}
-      <div className="relative z-10 p-7 rounded-full" style={{
-        background: `radial-gradient(circle at 38% 35%, #1E3A5F, #0D1117)`,
-        border: `1px solid ${C.border}`,
-        boxShadow: `0 0 50px ${C.teal}44, inset 0 1px 0 rgba(255,255,255,0.08)`,
-      }}>
-        <Globe size={56} color={C.teal} strokeWidth={1.2} />
-      </div>
+      {/* Center Earth (Blue Marble) */}
+      <motion.div
+        className="relative z-10 flex items-center justify-center"
+        style={{ width: 'clamp(132px, 42%, 172px)', aspectRatio: '1' }}
+        animate={{ scale: [1, 1.018, 1] }}
+        transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
+      >
+        {/* Soft atmospheric bloom */}
+        <div className="absolute rounded-full pointer-events-none" style={{
+          inset: '-20%',
+          background: `radial-gradient(circle, transparent 54%, ${C.blue}1F 64%, ${C.teal}14 70%, transparent 82%)`,
+        }} />
+        {/* Thin bright atmosphere limb */}
+        <div className="absolute rounded-full pointer-events-none" style={{
+          inset: '-3%',
+          background: `radial-gradient(circle, transparent 64%, ${C.teal}55 70%, rgba(150,210,255,0.55) 73%, transparent 78%)`,
+        }} />
+
+        {/* Earth disk */}
+        <div className="relative w-full h-full rounded-full overflow-hidden" style={{
+          boxShadow: `0 0 46px ${C.teal}55, 0 0 90px ${C.blue}2E, inset 0 0 1px rgba(255,255,255,0.4)`,
+          border: `1px solid ${C.teal}33`,
+        }}>
+          <img src="/earth-bluemarble.jpg" alt="Planeta Terra visto do espaço"
+            className="w-full h-full object-cover" style={{ transform: 'scale(1.05)' }} loading="eager" />
+
+          {/* Day-light highlight + night terminator for depth */}
+          <div className="absolute inset-0 rounded-full pointer-events-none" style={{
+            background: `
+              radial-gradient(circle at 30% 28%, rgba(170,215,255,0.22) 0%, transparent 38%),
+              radial-gradient(circle at 74% 78%, rgba(0,2,12,0.6) 0%, transparent 56%)
+            `,
+          }} />
+          {/* Inner atmospheric rim */}
+          <div className="absolute inset-0 rounded-full pointer-events-none" style={{
+            boxShadow: `inset 0 0 20px 2px ${C.blue}55, inset 0 0 6px 1px rgba(180,220,255,0.35)`,
+          }} />
+        </div>
+      </motion.div>
 
       {/* Orbital data dots */}
       {[C.teal, C.blue, C.orange, C.green].map((color, i) => {
