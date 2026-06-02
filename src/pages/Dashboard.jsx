@@ -2,7 +2,8 @@ import React, { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { MapPin, Bell, Flame, Leaf, ArrowRight, TrendingUp, TrendingDown } from 'lucide-react';
-import { C, SEV_COLOR } from '../theme';
+import { SEV_COLOR } from '../theme';
+import { useTheme } from '../context/ThemeContext';
 import { ALERTAS, ALERTAS_30D, ALERTAS_REGIAO, MODULO_DIST } from '../data/mock';
 import { LineChart, BarChart, DonutChart } from '../components/Charts';
 
@@ -11,12 +12,11 @@ const fadeUp = {
   visible: (i = 0) => ({ opacity: 1, y: 0, transition: { delay: i * 0.07, duration: 0.5, ease: 'easeOut' } }),
 };
 
-/* ── KPI CARD ── */
 function KpiCard({ icon: Icon, label, value, color, trend, i }) {
+  const { C } = useTheme();
   return (
-    <motion.div variants={fadeUp} custom={i}
-      className="p-5 rounded-2xl"
-      style={{ background: C.card, border: `1px solid ${C.border}` }}>
+    <motion.div variants={fadeUp} custom={i} className="p-5 rounded-2xl"
+      style={{ background: C.card, border: `1px solid ${C.border}`, boxShadow: C.shadow }}>
       <div className="flex items-start justify-between mb-4">
         <div className="w-10 h-10 rounded-xl flex items-center justify-center"
           style={{ background: `${color}18`, border: `1px solid ${color}33` }}>
@@ -36,67 +36,52 @@ function KpiCard({ icon: Icon, label, value, color, trend, i }) {
   );
 }
 
-/* ── BRAZIL MAP (stylized) ── */
-const MAP_MARKERS = ALERTAS.filter(a => a.status === 'ativo').map(a => ({
-  ...a,
-  color: SEV_COLOR[a.severidade],
-}));
-
 function BrazilMap() {
+  const { C } = useTheme();
+  const activeAlerts = ALERTAS.filter(a => a.status === 'ativo');
   return (
     <div className="relative rounded-2xl overflow-hidden" style={{
-      background: '#0a1520',
-      border: `1px solid ${C.border}`,
       height: 280,
+      backgroundColor: C.bg,
+      border: `1px solid ${C.border}`,
+      boxShadow: C.shadow,
       backgroundImage: `
-        linear-gradient(rgba(33,150,243,0.04) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(33,150,243,0.04) 1px, transparent 1px)
+        linear-gradient(${C.blue}08 1px, transparent 1px),
+        linear-gradient(90deg, ${C.blue}08 1px, transparent 1px)
       `,
       backgroundSize: '24px 24px',
     }}>
-      {/* Brazil silhouette hint */}
-      <div className="absolute inset-0 flex items-center justify-center opacity-5 select-none pointer-events-none">
-        <div className="font-black text-[10rem]" style={{ color: C.teal }}>BR</div>
-      </div>
-
-      {/* Label */}
-      <div className="absolute top-3 left-3 flex items-center gap-2">
-        <span className="text-xs font-semibold px-2 py-1 rounded-full"
+      <div className="absolute top-3 left-3">
+        <span className="text-xs font-semibold px-2.5 py-1 rounded-full"
           style={{ background: `${C.blue}18`, color: C.blue, border: `1px solid ${C.blue}33` }}>
           🗺 Brasil — 5.570 municípios monitorados
         </span>
       </div>
-
-      {/* Alert dots */}
-      {MAP_MARKERS.map(m => (
-        <motion.div key={m.id}
-          className="absolute"
-          style={{ left: `${m.mapX}%`, top: `${m.mapY}%`, transform: 'translate(-50%,-50%)' }}
-        >
-          <motion.div className="w-4 h-4 rounded-full absolute -inset-2"
-            style={{ background: m.color, opacity: 0.3 }}
-            animate={{ scale: [1, 2.5, 1], opacity: [0.3, 0, 0.3] }}
-            transition={{ duration: 2, repeat: Infinity, delay: m.id * 0.3 }}
-          />
-          <div className="w-3.5 h-3.5 rounded-full relative z-10"
-            style={{ background: m.color, boxShadow: `0 0 8px ${m.color}` }} />
-          <div className="absolute left-5 top-1/2 -translate-y-1/2 whitespace-nowrap text-xs px-1.5 py-0.5 rounded font-semibold"
-            style={{ background: C.card, color: m.color, border: `1px solid ${m.color}33`, pointerEvents: 'none' }}>
-            {m.tipo}
-          </div>
-        </motion.div>
-      ))}
-
-      {/* Legend */}
+      <div className="absolute inset-0 flex items-center justify-center opacity-[0.04] pointer-events-none select-none">
+        <span className="font-black text-[10rem]" style={{ color: C.teal }}>BR</span>
+      </div>
+      {activeAlerts.map(m => {
+        const color = SEV_COLOR[m.severidade];
+        return (
+          <motion.div key={m.id} className="absolute"
+            style={{ left: `${m.mapX}%`, top: `${m.mapY}%`, transform: 'translate(-50%,-50%)' }}>
+            <motion.div className="absolute rounded-full"
+              style={{ width: 20, height: 20, background: color, opacity: 0.25, left: -4, top: -4 }}
+              animate={{ scale: [1, 2.5, 1], opacity: [0.25, 0, 0.25] }}
+              transition={{ duration: 2, repeat: Infinity, delay: m.id * 0.3 }} />
+            <div className="w-3.5 h-3.5 rounded-full relative z-10"
+              style={{ background: color, boxShadow: `0 0 8px ${color}` }} />
+            <div className="absolute left-5 top-1/2 -translate-y-1/2 text-xs px-1.5 py-0.5 rounded font-semibold whitespace-nowrap"
+              style={{ background: C.card, color, border: `1px solid ${color}33` }}>
+              {m.tipo}
+            </div>
+          </motion.div>
+        );
+      })}
       <div className="absolute bottom-3 right-3 flex flex-col gap-1.5">
-        {[
-          { label: 'Crítico', color: C.red },
-          { label: 'Alto',    color: C.orange },
-          { label: 'Médio',   color: C.yellow },
-        ].map(l => (
-          <div key={l.label} className="flex items-center gap-1.5 text-xs" style={{ color: C.txt2 }}>
-            <div className="w-2 h-2 rounded-full" style={{ background: l.color }} />
-            {l.label}
+        {[{ l: 'Crítico', c: SEV_COLOR.CRITICO }, { l: 'Alto', c: SEV_COLOR.ALTO }, { l: 'Médio', c: SEV_COLOR.MEDIO }].map(x => (
+          <div key={x.l} className="flex items-center gap-1.5 text-xs" style={{ color: C.txt2 }}>
+            <div className="w-2 h-2 rounded-full" style={{ background: x.c }} /> {x.l}
           </div>
         ))}
       </div>
@@ -104,18 +89,17 @@ function BrazilMap() {
   );
 }
 
-/* ── ALERT ROW ── */
 function AlertRow({ a, i }) {
+  const { C } = useTheme();
   const color = SEV_COLOR[a.severidade];
-  const elapsed = (() => {
-    const diff = Math.floor((new Date() - new Date(a.criado_em)) / 60000);
-    if (diff < 60) return `${diff}min`;
-    return `${Math.floor(diff / 60)}h`;
-  })();
+  const diff  = Math.floor((Date.now() - new Date(a.criado_em)) / 60000);
+  const elapsed = diff < 60 ? `${diff}min` : `${Math.floor(diff / 60)}h`;
   return (
     <motion.div variants={fadeUp} custom={i}
-      className="flex items-center gap-3 p-3 rounded-xl transition-all hover:bg-white/5 cursor-pointer"
-      style={{ borderLeft: `3px solid ${color}` }}>
+      className="flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-all"
+      style={{ borderLeft: `3px solid ${color}` }}
+      onMouseEnter={e => e.currentTarget.style.background = `${C.border}44`}
+      onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
       <div className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: color }} />
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2">
@@ -124,15 +108,16 @@ function AlertRow({ a, i }) {
         </div>
         <div className="text-xs truncate mt-0.5" style={{ color: C.txt2 }}>{a.regiao}</div>
       </div>
-      <div className="text-xs px-2 py-0.5 rounded-full flex-shrink-0"
+      <span className="text-xs px-2 py-0.5 rounded-full flex-shrink-0"
         style={{ background: `${color}18`, color }}>
         {a.severidade === 'CRITICO' ? 'Crítico' : a.severidade === 'ALTO' ? 'Alto' : 'Médio'}
-      </div>
+      </span>
     </motion.div>
   );
 }
 
 export default function Dashboard() {
+  const { C } = useTheme();
   const ref = useRef(null);
   const inView = useInView(ref, { once: true });
 
@@ -144,15 +129,11 @@ export default function Dashboard() {
   ];
 
   return (
-    <motion.div ref={ref} initial="hidden" animate={inView ? 'visible' : 'hidden'}
-      className="space-y-6">
-
-      {/* KPIs */}
+    <motion.div ref={ref} initial="hidden" animate={inView ? 'visible' : 'hidden'} className="space-y-6">
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {kpis.map((k, i) => <KpiCard key={k.label} {...k} i={i} />)}
       </div>
 
-      {/* Map + Alerts */}
       <div className="grid lg:grid-cols-3 gap-5">
         <motion.div variants={fadeUp} custom={4} className="lg:col-span-2">
           <div className="flex items-center justify-between mb-3">
@@ -170,17 +151,15 @@ export default function Dashboard() {
             <Link to="/sentinel" className="text-xs font-semibold" style={{ color: C.teal }}>Ver todos</Link>
           </div>
           <div className="rounded-2xl p-3 space-y-1"
-            style={{ background: C.card, border: `1px solid ${C.border}`, maxHeight: 280, overflowY: 'auto' }}>
+            style={{ background: C.card, border: `1px solid ${C.border}`, boxShadow: C.shadow, maxHeight: 280, overflowY: 'auto' }}>
             {ALERTAS.slice(0, 6).map((a, i) => <AlertRow key={a.id} a={a} i={i} />)}
           </div>
         </motion.div>
       </div>
 
-      {/* Charts row */}
       <div className="grid md:grid-cols-3 gap-5">
-        {/* Line chart */}
         <motion.div variants={fadeUp} custom={6} className="md:col-span-2 p-5 rounded-2xl"
-          style={{ background: C.card, border: `1px solid ${C.border}` }}>
+          style={{ background: C.card, border: `1px solid ${C.border}`, boxShadow: C.shadow }}>
           <div className="flex items-center justify-between mb-4">
             <h2 className="font-bold text-sm" style={{ color: C.txt }}>Alertas nos últimos 30 dias</h2>
             <span className="text-xs font-semibold px-2 py-0.5 rounded-full"
@@ -194,9 +173,8 @@ export default function Dashboard() {
           </div>
         </motion.div>
 
-        {/* Donut + module dist */}
         <motion.div variants={fadeUp} custom={7} className="p-5 rounded-2xl"
-          style={{ background: C.card, border: `1px solid ${C.border}` }}>
+          style={{ background: C.card, border: `1px solid ${C.border}`, boxShadow: C.shadow }}>
           <h2 className="font-bold text-sm mb-4" style={{ color: C.txt }}>Distribuição por Módulo</h2>
           <div className="flex items-center justify-center mb-4">
             <DonutChart segments={MODULO_DIST} size={110} />
@@ -215,12 +193,9 @@ export default function Dashboard() {
         </motion.div>
       </div>
 
-      {/* Bar chart */}
       <motion.div variants={fadeUp} custom={8} className="p-5 rounded-2xl"
-        style={{ background: C.card, border: `1px solid ${C.border}` }}>
-        <div className="flex items-center justify-between mb-5">
-          <h2 className="font-bold text-sm" style={{ color: C.txt }}>Alertas por Estado (últimos 30 dias)</h2>
-        </div>
+        style={{ background: C.card, border: `1px solid ${C.border}`, boxShadow: C.shadow }}>
+        <h2 className="font-bold text-sm mb-5" style={{ color: C.txt }}>Alertas por Estado (últimos 30 dias)</h2>
         <BarChart data={ALERTAS_REGIAO} height={100} />
       </motion.div>
     </motion.div>
